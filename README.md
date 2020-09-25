@@ -18,7 +18,7 @@
 
 ```
 mkdir webpack4-react && cd webpack4-react
-npm init -y
+npm init -y // 初始化，生成package.json文件
 ```
 
 ### 2.安装 webpack & webpack 的 cli
@@ -27,13 +27,13 @@ npm init -y
 当前 webpack-cli 版本：3.3.10
 
 ```
-npm install --save-dev webpack webpack-cli
+npm install --save-dev/-D webpack webpack-cli
 ```
 
 或
 
 ```
-yarn add webpack webpack-cli --dev
+yarn add  --dev/-D webpack webpack-cli
 ```
 
 > 调整 package.json 文件，以便确保我们安装包是私有的(private)，并且移除 main 入口。这可以防止意外发布你的代码。
@@ -44,7 +44,7 @@ package.json
 {
   ...
   "description": "webpack4-react",
-  "private": true,
+  "private": true, // 将仓库私有化
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
