@@ -66,6 +66,7 @@ yarn add lodash
 ```
 
 ### 4.创建以下目录结构、文件和内容：
+webpack默认的源代码入口就是src/index.js, 默认出口是/dist, 默认配置文件是webpack.config.js, 默认打包的文件名是main.js
 
 ```
 webpack4-react
