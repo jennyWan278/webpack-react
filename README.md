@@ -307,6 +307,7 @@ dist/index.html
   },
   module: {
     rules: [
+    // 将新的js语法和JSX语法转为es5标准的代码在浏览器中运行
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -316,17 +317,17 @@ dist/index.html
             options: {
               presets: [
                 [
-                  '@babel/preset-env',
+                  '@babel/preset-env', // 包含当前所有ECMASCript标准的的最新特性 
                   {
-                    useBuiltIns: 'usage',
-                    corejs: 3,
-                    targets: {
+                    useBuiltIns: 'usage', // Babel 会在你使用到 ES2015+ 新特性时，按需引入 babel-polyfill ，
+                    corejs: 3, // 它是JavaScript标准库的polyfill,仅当与useBuiltIns: usage/entry或一起使用时,此选项才有效
+                    targets: { // 支持最低浏览器环境版本的对象
                       chrome: '58',
                       ie: '8',
                     },
                   },
                 ],
-                '@babel/preset-react',
+                '@babel/preset-react', // 支持react的jsx语法
               ],
             },
           },
@@ -361,7 +362,7 @@ dist/index.html
     ],
     "plugins": [
       [
-        "@babel/plugin-transform-runtime",
+        "@babel/plugin-transform-runtime", // 减少冗余代码，使用时还依赖于babel-runtime插件
         {
           "absoluteRuntime": false,
           "corejs": false,
@@ -452,7 +453,7 @@ src/index.html
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
-  devServer: {
+  devServer: { // webpack-dev-serve的配置项
     contentBase: '/src',
     hot: true,
   },
@@ -475,11 +476,11 @@ src/index.html
     hot: true,
   },
   plugins: [
-    new HtmlWebpackPlugin({
+    new HtmlWebpackPlugin({ // 自动创建一个html文件，该文件引入了打好的webpack包
       template: './src/index.html',
       filename: './index.html',
       chunks: ['index'],
-      inject: 'body',
+      inject: 'body', // 将打好的包引入在template文件的body元素的下面
     }),
   ],
   ...
