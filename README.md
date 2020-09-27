@@ -251,11 +251,12 @@ Entrypoint main = main.js
 
 ### 1. 下载 react 和 react-dom
 
-`npm install --save-dev react react-dom`
+`npm install --save react react-dom`
 
 ### 2. 下载 babel(编译 js、jsx，es6 等)
 
-`npm install --save-dev @babel/cli @babel/core @babel/preset-react @babel/preset-env @babel/plugin-transform-runtime babel-loader`
+`npm install --save-dev @babel/cli @babel/core @babel/preset-react @babel/preset-env @babel/plugin-transform-runtime babel-loader @babel/plugin-proposal-class-properties`
+npm install --save @babel/runtime core-js
 
 ### 3. 修改 入口文件
 
@@ -314,7 +315,7 @@ dist/index.html
         use: [
           {
             loader: 'babel-loader',
-            options: {
+            options: { // 一般配置在.babelrc 文件中
               presets: [
                 [
                   '@babel/preset-env', // 包含当前所有ECMASCript标准的的最新特性 
@@ -369,6 +370,11 @@ dist/index.html
           "helpers": true,
           "regenerator": true,
           "useESModules": false
+        }
+      ],
+      ["@babel/plugin-proposal-class-properties", 
+        { 
+            "loose": true
         }
       ]
     ]
@@ -762,12 +768,6 @@ package.json
     plugins: [require('autoprefixer')({overrideBrowserslist: ['> 0.15% in CN']})],
   };
   ```
-
-> 这时候执行 `npm run dev` 命令会报错，因为缺少一些 babel 依赖，下载一下就好了
-
-```
-npm install --save @babel/runtime core-js
-```
 
 执行 `npm run dev` ,自动打开浏览器，css 相关的配置构建完成
 
