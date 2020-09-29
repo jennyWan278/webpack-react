@@ -263,6 +263,9 @@ npm install --save @babel/runtime core-js
 src/index.js
 
 ```
+import 'core-js/stable'; // 与babel-loader中的配置结合 实现pollyfilly
+import 'regenerator-runtime/runtime'; //  与babel-loader中的配置结合 实现pollyfilly
+
 import React from 'react';
 import ReactDom from 'react-dom';
 
@@ -894,7 +897,7 @@ ReactDom.render(
 
 - 1. 下载依赖
   ```
-  npm install --save-dev webpack-merge clean-webpack-plugin uglifyjs-webpack-plugin
+  npm install --save-dev webpack-merge clean-webpack-plugin
   ```
 - 2. 拆分 webpack 配置
 
@@ -1026,16 +1029,12 @@ ReactDom.render(
 
   ```
   const merge = require('webpack-merge');
-  const UglifyJSPlugin = require('uglifyjs-webpack-plugin'); // 用来缩小（压缩优化）js文件
   const { CleanWebpackPlugin } = require('clean-webpack-plugin');
   const common = require('./webpack.common.js');
   module.exports = merge(common, {
     mode: 'production',
     devtool: 'source-map',
     plugins: [
-      new UglifyJSPlugin({
-        sourceMap: true,
-      }),
       new CleanWebpackPlugin(),
     ],
   });
@@ -1129,15 +1128,19 @@ ReactDom.render(
         removeStyleLinkTypeAttributes: true,
         //使用短的文档类型，默认false
         useShortDoctype: true,
+        collapseWhitespace: true,
+				keepClosingSlash: true,
+				minifyURLs: true
       },
   }),
   ]
   ...
   module: {
-    rules: [
+    rules: [ // 压缩html文件
       {
         test: /\.html$/,
         use: 'html-loader',
+        exclude: path.resolve('./src/index.html')
       },
     ]
   }
@@ -1162,11 +1165,10 @@ ReactDom.render(
     ...
     plugins: [
       ...
-      new MiniCssExtractPlugin({
-        filename: devMode ? '[name].css' : '[name]_[hash:5].css',
-        chunkFilename: devMode ? '[id].css' : '[id]_[hash:5].css',
-        disable: false, //是否禁用此插件
-        allChunks: true,
+      new MiniCssExtractPlugin(isDev ? {
+        chunkFilename: 'style/[name].[contenthash:8].css',
+      }: {
+        filename: 'style/[name].[contenthash:8].css',
       }),
       ...
     ]
@@ -1211,16 +1213,12 @@ ReactDom.render(
   ```
   ...
   const merge = require('webpack-merge');
-  const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
   const { CleanWebpackPlugin } = require('clean-webpack-plugin');
   const common = require('./webpack.config.common.js');
   module.exports = merge(common, {
-    mode: 'production',
+    mode: 'production', // mode为production会自动压缩js文件
     devtool: 'source-map',
     plugins: [
-      new UglifyJSPlugin({
-        sourceMap: true,
-      }),
       new CleanWebpackPlugin(),
     ],
   });
@@ -1239,18 +1237,18 @@ ReactDom.render(
 
   ```
   ...
-  const os = require('os');
   const HappyPack = require('happypack');
-  const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
   ...
   plugins: [
     ...
     new HappyPack({
       id: 'babel', //用id来标识 happypack处理那里类文件
-      threadPool: happyThreadPool, //共享进程池
+      threads: 1,
+      verbose: false, // 是否允许happyPack输出日志
       loaders: [
         {
           loader: 'babel-loader',
+          cacheDirectory: true
         },
       ],
     }),
@@ -1269,7 +1267,7 @@ ReactDom.render(
   ...
   ```
 
-### 5. polyfill 编译 es6 的新语法
+### 5. polyfill 编译 es6 的新语法 , 等同于bable-loader中配置了"@babel/preset-env"的"useBuiltIns": "usage","corejs": 3，在入口页面
 
 - 1. 下载依赖
   ```
